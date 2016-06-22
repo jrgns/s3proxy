@@ -1,8 +1,7 @@
-# S3proxy
+# S3Proxy
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/s3proxy`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+S3Proxy provides an easy way to proxy and cache access to files on S3 through
+your Rack app.
 
 ## Installation
 
@@ -22,7 +21,24 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+S3Proxy is a module that allows you to add the `proxy_s3_file` method to your
+class. You can also add it as a helper to your Sinatra app:
+
+```
+# app.rb
+require 's3proxy'
+
+class App < Sinatra::Base
+    helpers ::S3Proxy
+
+    get '/s3/*' do |filename|
+      matches = filename.match(/([^\/]+)\/(.*)/)
+      bucket = matches[1]
+      key = matches[2]
+      send_file proxy_s3_file(bucket, key)
+    end
+end
+```
 
 ## Development
 
@@ -32,7 +48,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/s3proxy.
+Bug reports and pull requests are welcome on GitHub at https://github.com/jrgns/s3proxy.
 
 
 ## License
